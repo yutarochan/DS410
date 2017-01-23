@@ -1,0 +1,13 @@
+- Predictive Analytics of Product
+    - Build a sentiment corpus around the amazon dataset, use to predict sentiment of review text.
+    - Utilize word embeddings (k-means) to cluster reviews.
+
+- Analysis of Reviews from Sentiment Model
+    - Understanding what makes a review very helpful based on the provided features of the data + sentiment.
+    - Comparing individual review to the average reviews (look at ratings)
+        - Use sentiment model built from corpus to find relationship between the sentiment.
+    - Looking at terms, words and descriptions associated with reliable datasets.
+    - Observe trends by product category, price, brand, image/presence.
+    - Observe word usage and ratings
+
+http://jmcauley.ucsd.edu/data/amazon/links.html
