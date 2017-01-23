@@ -1,2 +1,2 @@
-# DS410
-Workspace repository for DS 410
+# DS 410: Amazon Dataset
+Big Data Analytics using Apache Spark and other tools
