@@ -1,5 +1,5 @@
 '''
-Amazon Dataset - Utility Function
+Amazon Dataset - Data Utility Function
 Various utility functions useful for working with the dataset
 
 Source: http://jmcauley.ucsd.edu/data/amazon/links.html
@@ -41,3 +41,13 @@ def readImageFeatures(path):
         for i in range(4096):
             feature.append(struct.unpack('f', f.read(4)))
         yield asin, feature
+
+# Download Dataset
+def download(url, target):
+    # Generate Directory - If it doesn't exist yet...
+    d = os.path.dirname(target)
+    if not os.path.exists(d):
+        os.makedirs(d)
+
+    # Download File
+    
