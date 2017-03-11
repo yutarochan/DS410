@@ -17,20 +17,6 @@ case class Review(
 )
 
 object ReviewJSON {
-    def serializeJSON(rev: Review) = {
-        JsObject(Seq(
-            "reviewTime" -> JsString(rev.reviewTime),
-            "reviewerID" -> JsString(rev.reviewID),
-            "asin" -> JsString(rev.asin),
-            "reviewText" -> JsString(rev.reviewText),
-            "reviewerName" -> JsString(rev.reviewerName),
-            "unixReviewTime" -> JsNumber(rev.unixReviewTime),
-            "helpful" -> JsArray(rev.helpful),
-            "overall" -> JsNumber(rev.overall),
-            "summary" -> JsString(rev.summary)
-        ))
-    }
-
     def parseJSON(rev: JsValue) = {
         val reviewTime = (rev \ "reviewTime").as[String]
         val reviewerID = (rev \ "reviewerID").as[String]
