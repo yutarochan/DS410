@@ -33,19 +33,8 @@ object AmazonStats {
 
         // Import HDFS and Parse JSON Object
         val lines = sc.textFile("hdfs:/user/yjo5006/reviews_Books_5.json.gz")
+		val df = sqlContext.read.json(lines)
 
-		// GenericDecoder for JSON
-		type GenericDecoder = String => JMap[String, Object]
-
-		val decoder: GenericDecoder = {
-			val gson: Gson = new Gson()
-			x => gson.fromJson(x, (new LinkedHashMap[String, Object]()).getClass)
-		}
-
-		val parsed_json = lines.map(decoder(_))
-
-		// val json: JsValue = Json.parse(
-        // val json = lines.map(x => if (JSON.parseFull(x) != None) JSON.parseFull(x).get)
-
+		df.printSchema()
     }
 }
