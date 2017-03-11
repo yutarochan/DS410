@@ -11,7 +11,7 @@ case class Review(
     reviewText: String,
     reviewerName: String,
     unixReviewTime: Long,
-    helpful: Array(Float, Float),
+    helpful: (Float, Float),
     overall: Float,
     summary: String
 )
@@ -24,7 +24,7 @@ object ReviewJSON {
         val reviewText = (rev \ "reviewText").as[String]
         val reviewName = (rev \ "reviewName").as[String]
         val unixReviewTime = (rev \ "unixReviewTime").as[Long]
-        val helpful = (rev \ "helpful").as[Array[Float]]
+        val helpful = (rev \ "helpful").as[(Float, Float)]
         val overall = (rev \ "overall").as[Float]
         val summary = (rev \ "summary").as[String]
 
