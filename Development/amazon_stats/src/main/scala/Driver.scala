@@ -42,7 +42,7 @@ object AmazonStats {
 			x => gson.fromJson(x, (new LinkedHashMap[String, Object]()).getClass)
 		}
 
-		val parsed_json = lines.map(decode(_))
+		val parsed_json = lines.map(decoder(_))
 
 		// val json: JsValue = Json.parse(
         // val json = lines.map(x => if (JSON.parseFull(x) != None) JSON.parseFull(x).get)
