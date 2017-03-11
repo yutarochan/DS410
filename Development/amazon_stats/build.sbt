@@ -5,5 +5,6 @@ lazy val root = (project in file(".")).
 )
 libraryDependencies ++= Seq(
 	"org.apache.spark" %% "spark-core" % "1.5.2",
-	"org.apache.spark" %% "spark-mllib" % "1.5.2"
+	"org.apache.spark" %% "spark-mllib" % "1.5.2",
+	"com.typesafe.play" % "play-json_2.11" % "2.4.2"
 )
