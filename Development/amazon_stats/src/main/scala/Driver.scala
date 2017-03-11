@@ -9,9 +9,6 @@ import org.apache.spark.SparkContext
 import org.apache.spark.SparkContext._
 import org.apache.hadoop.conf.Configuration
 
-import com.google.gson.Gson
-import java.util.{Map => JMap, LinkedHashMap}
-
 object AmazonStats {
     // Application Specific Variables
 	private final val SPARK_MASTER = "yarn-client"
