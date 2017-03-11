@@ -9,7 +9,8 @@ import org.apache.spark.SparkContext
 import org.apache.spark.SparkContext._
 import org.apache.hadoop.conf.Configuration
 
-import play.api.libs.json._
+import com.google.gson.Gson
+import java.util.{Map => JMap, LinkedHashMap}
 
 object AmazonStats {
     // Application Specific Variables
@@ -32,7 +33,16 @@ object AmazonStats {
 
         // Import HDFS and Parse JSON Object
         val lines = sc.textFile("hdfs:/user/yjo5006/reviews_Books_5.json.gz")
-		val parsed_json = lines.map(Json.parse(_))
+
+		// GenericDecoder for JSON
+		type GenericDecoder = String => JMap[String, Object]
+
+		val decoder: GenericDecoder = {
+			val gson: Gson = new Gson()
+			x => gson.fromJson(x, (new LinkedHashMap[String, Object]()).getClass)
+		}
+
+		val parsed_json = lines.map(decode(_))
 
 		// val json: JsValue = Json.parse(
         // val json = lines.map(x => if (JSON.parseFull(x) != None) JSON.parseFull(x).get)
