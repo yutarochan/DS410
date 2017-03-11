@@ -8,9 +8,6 @@ import org.apache.spark.SparkConf
 import org.apache.spark.SparkContext
 import org.apache.spark.SparkContext._
 import org.apache.hadoop.conf.Configuration
-import org.apache.spark.sql.SparkSession
-import spark.implicits._
-
 
 object AmazonStats {
     // Application Specific Variables
@@ -25,6 +22,7 @@ object AmazonStats {
         // Configure SparkContext
 		val conf = new SparkConf().setMaster(SPARK_MASTER).setAppName(APPLICATION_NAME)
 		val sc = new SparkContext(conf)
+		val sqlContext = new org.apache.spark.sql.SQLContext(sc)
 
         // Configure HDFS
 		val configuration = new Configuration();
@@ -33,7 +31,7 @@ object AmazonStats {
 
         // Import HDFS and Parse JSON Object
         val lines = sc.textFile("hdfs:/user/yjo5006/reviews_Books_5.json.gz")
-		val df = conf.read.json(lines)
+		val df = sqlContext.read.json(lines)
 
 		df.printSchema()
     }
