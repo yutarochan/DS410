@@ -30,8 +30,11 @@ object AmazonStats {
 		configuration.addResource(HDFS_SITE_CONFIG_PATH);
 
         // Import HDFS and Parse JSON Object
-        val lines = sc.textFile("hdfs:/user/yjo5006/reviews_Books_5.json.gz")
-		val df = sqlContext.read.json(lines)
+        val reviews = sc.textFile("hdfs:/user/yjo5006/reviews_Books_5.json.gz")
+		val metadata = sc.textFile("hdfs:/user/yjo5006/meta_Books.json.gz")
+		
+		val review_df = sqlContext.read.json(reviews)
+		val metadata_df = sqlContext.read.json(metadata)
 
 		// Dataframe JSON Schema
 		df.printSchema()
