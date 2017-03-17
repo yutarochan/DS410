@@ -18,3 +18,19 @@ JSON Dataset Schema
 **Record Counts**
 * reviews_Books_5.json.gz - `8898041`
 * metadata.json.gz - ``
+
+## Overall Helpfulness Ratio Distribution
+
+## Temporal Analysis
+### Monthly
+### Weekly
+### Day of Week
+
+## Review Text Analysis
+### Word Count Distribution
+### Top-100 Word Frequency
+(With Stopwords Removed)
+
+## Price Distribution
+## Brand Distribution
+## Category Distribution
