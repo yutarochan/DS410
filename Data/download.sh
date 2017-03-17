@@ -9,7 +9,7 @@
 # mv reviews_Books_5.json.gz raw/
 
 echo "Downloading Metadata..."
-http://snap.stanford.edu/data/amazon/productGraph/categoryFiles/meta_Books.json.gz
+wget http://snap.stanford.edu/data/amazon/productGraph/categoryFiles/meta_Books.json.gz
 mv meta_Books.json.gz raw/
 
 # Put File Onto HDFS
