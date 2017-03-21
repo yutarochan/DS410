@@ -35,15 +35,21 @@ object AmazonStats {
 
 		// Parse JSON and Convert to SparkSQL Dataframe
 		val review_df = sqlContext.read.json(reviews)
-		val metadata_df = sqlContext.read.json(metadata)
+		// val metadata_df = sqlContext.read.json(metadata)
 
 		// Dataframe JSON Schema
-		review_df.printSchema()
-		metadata_df.printSchema()
+		// review_df.printSchema()
+		// metadata_df.printSchema()
 
 		// Basic Review Statistics
-		val reviewers = review_df.select("reviewerID").count
-		val reviewers_distinct = review_df.select("reviewerID").distinct.count
-		val reviewers_distribution = review_df.groupBy("reviewerID").count().describe()
+		//val reviewers = review_df.select("reviewerID").count
+                //val reviewers_distinct = review_df.select("reviewerID").distinct.count
+		//val reviewers_distribution = review_df.groupBy("reviewerID").count().describe()
+
+                val helpful = review_df.select("helpful")
+                helpful.take(10)
+                //val helpful_distribution = review_df.groupBy("helpful").count().describe()
+                //println(helpful)
+
     }
 }
