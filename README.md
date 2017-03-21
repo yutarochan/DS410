@@ -12,3 +12,6 @@ To run interactive mode with necessary dependencies and libraries, run the
 `spark-shell` command to execute classpath configurations of jar files.
 
     Development/spark-shell/./spark-shell.sh
+
+### System Outline
+// TODO: Add information about the implementation details.
