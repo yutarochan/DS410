@@ -9,6 +9,8 @@ import org.apache.spark.SparkContext
 import org.apache.spark.SparkContext._
 import org.apache.hadoop.conf.Configuration
 
+import org.apache.spark.sql.functions.{unix_timestamp, from_unixtime}
+
 object AmazonStats {
     // Application Specific Variables
 	private final val SPARK_MASTER = "yarn-client"
@@ -45,5 +47,8 @@ object AmazonStats {
 		val reviewers = review_df.select("reviewerID").count
 		val reviewers_distinct = review_df.select("reviewerID").distinct.count
 		val reviewers_distribution = review_df.groupBy("reviewerID").count().describe()
+
+		// Temporal Review Analysis
+		val review_date = review_df.select(to_date(from_unixtime(col("unixReviewTime"), "yyyy-MM-dd"))).rdd.map(x=>x.toString)
     }
 }
