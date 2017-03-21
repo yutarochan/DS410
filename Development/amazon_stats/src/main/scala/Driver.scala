@@ -53,7 +53,7 @@ object AmazonStats {
         println(helpful)
 
 		// Temporal Review Analysis
-		val review_date = review_df.select(to_date(from_unixtime(col("unixReviewTime"), "yyyy-MM-dd"))).rdd.map(x=>x.toString)
+		// val review_date = review_df.select(to_date(from_unixtime(col("unixReviewTime"), "yyyy-MM-dd"))).rdd.map(x=>x.toString)
 
     }
 }
