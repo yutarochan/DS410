@@ -48,7 +48,12 @@ object AmazonStats {
 		val reviewers_distinct = review_df.select("reviewerID").distinct.count
 		val reviewers_distribution = review_df.groupBy("reviewerID").count().describe()
 
+        val helpful = review_df.select("helpful").take(10)
+        val helpful_distribution = review_df.groupBy("helpful").count().describe()
+        println(helpful)
+
 		// Temporal Review Analysis
 		val review_date = review_df.select(to_date(from_unixtime(col("unixReviewTime"), "yyyy-MM-dd"))).rdd.map(x=>x.toString)
+
     }
 }
