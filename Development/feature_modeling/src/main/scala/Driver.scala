@@ -38,7 +38,7 @@ object AmazonStats {
         val metadata_df = sqlContext.read.json(metadata)
 
         // Setup RDD Data Structure
-        val desc = metadata_df.select($"asin", $"description").rdd.map(x => (x(0), x(1))).filter(x => x._1 != null && x._2 != null).map(x => (x._1.toString, x._2.toString))
+        val desc = metadata_df.select("asin", "description").rdd.map(x => (x(0), x(1))).filter(x => x._1 != null && x._2 != null).map(x => (x._1.toString, x._2.toString))
 
         // Preprocess Text
         val desc_token = desc.map(x => (x._1, x._2.replaceAll("\\p{Punct}|\\d","").toLowerCase.split(" ").filter(_ != "").toArray))
