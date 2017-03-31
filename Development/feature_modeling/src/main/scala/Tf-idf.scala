@@ -6,6 +6,7 @@ import org.apache.spark.mllib.linalg.Vector
 import org.apache.spark.rdd.RDD
 
 object FeatureExtraction extends Serializable {
+    /*
     def genFV(data: RDD[(String, Array[String])]): RDD[(String, Vector)] = {
         val token_list = data.map(x => x._2)
 
@@ -13,7 +14,7 @@ object FeatureExtraction extends Serializable {
         val tfVectors = hashingTF.transform(token_list).cache()
         val idfModel = new IDF().fit(tfVectors)
         idfModel.transform(tfVectors)
-    }
+    } */
 
     /*
     def constructFeatureVectorsFromPapers(papers: RDD[Map[String, Array[String]]]): RDD[Vector] = {
