@@ -36,7 +36,7 @@ object AmazonStats {
         val metadata_df = sqlContext.read.json(metadata)
 
         // Setup RDD Data Structure
-        val desc = metadata_df.na.drop.select($"asin", $"description").rdd.map(x => (String: x(0), String: x(1)))
+        val desc = metadata_df.na.drop.select($"asin", $"description").rdd.map(x => (x(0).toString, x(1).toString))
 
         print(desc.take(1))
 
