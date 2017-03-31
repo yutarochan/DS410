@@ -42,7 +42,7 @@ object AmazonStats {
 
         // Preprocess Text
         val desc_token = desc.map(x => (x._1, x._2.replaceAll("\\p{Punct}|\\d","").toLowerCase.split(" ").filter(_ != "").toArray))
-        val stopwords = sc.broadcast(sc.textFile("file:///home/yjo5006/DS 410/DS410Labs/lab07/stopwords.txt").collect())
+        val stopwords = sc.broadcast(sc.textFile("stopwords.txt").collect())
         val tokens = desc_token.map(x => (x._1, x._2.filter(!stopwords.value.contains(_)))).persist()
 
         printf("Total Count: %d", tokens.count())
