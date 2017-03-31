@@ -1,7 +1,9 @@
 /*
- * Product Feature Modeling: Driver
+ * Product Feature Modeling: Driver Program
  * Authors: Yuya Ong & Yiyue Zou
  */
+package feature_modeling
+
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.fs.FileSystem
 import org.apache.spark.SparkConf
@@ -36,13 +38,18 @@ object AmazonStats {
         val metadata_df = sqlContext.read.json(metadata)
 
         // Setup RDD Data Structure
-        val desc = metadata_df.na.drop.select($"asin", $"description").rdd.map(x => (x(0).toString, x(1).toString))
+        val desc = metadata_df.select($"asin", $"description").rdd.map(x => (x(0), x(1))).filter(x => x._1 != null && x._2 != null).map(x => (x._1.toString, x._2.toString))
 
-        print(desc.take(1))
+        // Preprocess Text
+        val desc_token = desc.map(x => (x._1, x._2.replaceAll("\\p{Punct}|\\d","").toLowerCase.split(" ").filter(_ != "").toArray))
+        val stopwords = sc.broadcast(sc.textFile("file:///home/yjo5006/DS 410/DS410Labs/lab07/stopwords.txt").collect())
+        val tokens = desc_token.map(x => (x._1, x._2.filter(!stopwords.value.contains(_)))).persist()
+
+        printf("Total Count: %d", tokens.count())
 
         /*
         if (args(0) == "tf-idf") {
-
+            // val tf-idf =
         } else if (args(0) == "word2vec") {
 
         } */
