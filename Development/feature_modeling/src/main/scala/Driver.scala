@@ -13,6 +13,10 @@ import org.apache.hadoop.conf.Configuration
 
 import org.apache.spark.sql.functions.{unix_timestamp, from_unixtime}
 
+import org.apache.spark.mllib.feature.{HashingTF, IDF}
+import org.apache.spark.mllib.linalg.Vector
+import org.apache.spark.rdd.RDD
+
 object AmazonStats {
     // Application Specific Variables
 	private final val SPARK_MASTER = "yarn-client"
