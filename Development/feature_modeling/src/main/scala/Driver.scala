@@ -17,7 +17,7 @@ import org.apache.spark.mllib.feature.{HashingTF, IDF}
 import org.apache.spark.mllib.linalg.Vector
 import org.apache.spark.rdd.RDD
 
-object AmazonStats {
+object FeatureModeling {
     // Application Specific Variables
 	private final val SPARK_MASTER = "yarn-client"
 	private final val APPLICATION_NAME = "feature_modeling"
@@ -49,7 +49,7 @@ object AmazonStats {
         val stopwords = sc.broadcast(sc.textFile("stopwords.txt").collect())
         val tokens = desc_token.map(x => (x._1, x._2.filter(!stopwords.value.contains(_)))).persist()
 
-        printf("Total Count: %d", tokens.count() + "\n")
+        // printf("Total Count: %d", tokens.count() + "\n")
 
         if (args(0) == "tf-idf") {
             val tok  = tokens.map(x => x._2.toSeq)
