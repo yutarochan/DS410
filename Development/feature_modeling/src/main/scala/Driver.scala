@@ -53,7 +53,7 @@ object AmazonStats {
 
         if (args(0) == "tf-idf") {
             val hashingTF = new HashingTF()
-            val tf: RDD[Vector] = hashingTF.transform(documents)
+            val tf: RDD[Vector] = hashingTF.transform(tokens)
             tf.cache()
 
             val idf = new IDF(minDocFreq = 3).fit(tf)
