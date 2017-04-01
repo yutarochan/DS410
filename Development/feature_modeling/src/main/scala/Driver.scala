@@ -52,8 +52,10 @@ object AmazonStats {
         printf("Total Count: %d", tokens.count() + "\n")
 
         if (args(0) == "tf-idf") {
+            val tok  = tokens.map(x => x._2)
+
             val hashingTF = new HashingTF()
-            val tf: RDD[Vector] = hashingTF.transform(tokens)
+            val tf: RDD[Vector] = hashingTF.transform(tok)
             tf.cache()
 
             val idf = new IDF(minDocFreq = 3).fit(tf)
