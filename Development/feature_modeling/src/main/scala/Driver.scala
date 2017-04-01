@@ -45,13 +45,21 @@ object AmazonStats {
         val stopwords = sc.broadcast(sc.textFile("stopwords.txt").collect())
         val tokens = desc_token.map(x => (x._1, x._2.filter(!stopwords.value.contains(_)))).persist()
 
-        printf("Total Count: %d", tokens.count())
+        printf("Total Count: %d", tokens.count() + "\n")
 
-        /*
         if (args(0) == "tf-idf") {
+            val hashingTF = new HashingTF()
+            val tf: RDD[Vector] = hashingTF.transform(documents)
+            tf.cache()
+
+            val idf = new IDF(minDocFreq = 3).fit(tf)
+            val tfidf: RDD[Vector] = idf.transform(tf)
+
+            println("tfidf: ")
+            tfidf.foreach(x => println(x))
             // val tf-idf =
         } else if (args(0) == "word2vec") {
 
-        } */
+        }
 	}
 }
