@@ -13,6 +13,7 @@ import org.apache.hadoop.conf.Configuration
 
 import org.apache.spark.sql.functions.{unix_timestamp, from_unixtime}
 
+import org.apache.spark.mllib.feature.{Word2Vec, Word2VecModel}
 import org.apache.spark.mllib.feature.{HashingTF, IDF}
 import org.apache.spark.mllib.linalg.Vector
 import org.apache.spark.rdd.RDD
@@ -39,7 +40,7 @@ object FeatureModeling {
     def main(args: Array[String]): Unit = {
         // Import HDFS and Parse JSON Object
     	val metadata = sc.textFile("hdfs:/user/yjo5006/meta_Books.json.gz").map(x => x.replace("\'", "\""))
-        val metadata_df = sqlContext.read.json(metadata)
+        val metadata_df = sqlContext.read.json(metadata).persist()
 
         // Setup RDD Data Structure
         val desc = metadata_df.select("asin", "description").rdd.map(x => (x(0), x(1))).filter(x => x._1 != null && x._2 != null).map(x => (x._1.toString, x._2.toString))
@@ -47,25 +48,21 @@ object FeatureModeling {
         // Preprocess Text
         val desc_token = desc.map(x => (x._1, x._2.replaceAll("\\p{Punct}|\\d","").toLowerCase.split(" ").filter(_ != "").toArray))
         val stopwords = sc.broadcast(sc.textFile("stopwords.txt").collect())
-        val tokens = desc_token.map(x => (x._1, x._2.filter(!stopwords.value.contains(_)))).persist()
+        val tokens = desc_token.map(x => (x._1, x._2.filter(!stopwords.value.contains(_))))
 
-        // printf("Total Count: %d", tokens.count() + "\n")
+		// Generate Tokens
+		val tok  = tokens.map(x => x._2.toSeq).persist()
 
         if (args(0) == "tf-idf") {
-            val tok  = tokens.map(x => x._2.toSeq)
-
             val hashingTF = new HashingTF()
             val tf: RDD[Vector] = hashingTF.transform(tok)
             tf.cache()
 
             val idf = new IDF(minDocFreq = 3).fit(tf)
-            val tfidf: RDD[Vector] = idf.transform(tf)
-
-            println("tfidf: ")
-            tfidf.foreach(x => println(x))
-            // val tf-idf =
+            val tfidf: RDD[Vector] = idf.transform(tf)	// Feature Vector of Each Item
         } else if (args(0) == "word2vec") {
-
+			val word2vec = new Word2Vec()
+			val model = word2vec.fit(tok) // Feature Vector of Each Item
         }
 	}
 }
