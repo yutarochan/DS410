@@ -60,18 +60,18 @@ object AmazonStats {
 			// val review_date = review_df.select(to_date(from_unixtime(col("unixReviewTime"), "yyyy-MM-dd"))).rdd.map(x=>x.toString)
 		} else if (args(0) == "distribution") {
 			// Compute Distributions
-			val user_review_dist = review_df.select("reviewerID").rdd.map(x => (x(0).toString, 1)).groupByKey.map(x => (x._1, x._2.toArray.sum)).map(x => (x._2, 1)).groupByKey.map(x => (x._1, x._2.toArray.sum)).sortByKey()
-			val prod_review_dist = review_df.select("asin").rdd.map(x => (x(0).toString, 1)).groupByKey.map(x => (x._1, x._2.toArray.sum)).map(x => (x._2, 1)).groupByKey.map(x => (x._1, x._2.toArray.sum)).sortByKey()
+			val user_review_dist = review_df.select("reviewerID").rdd.map(x => (x(0).toString, 1)).groupByKey.map(x => (x._1, x._2.toArray.sum)).map(x => (x._2, 1)).groupByKey.map(x => (x._1, x._2.toArray.sum)).sortByKey().collect()
+			val prod_review_dist = review_df.select("asin").rdd.map(x => (x(0).toString, 1)).groupByKey.map(x => (x._1, x._2.toArray.sum)).map(x => (x._2, 1)).groupByKey.map(x => (x._1, x._2.toArray.sum)).sortByKey().collect()
 
 			// Generate Outputs of Distributions
 			var writer = new PrintWriter(new File("user_review_distribution.csv"))
-            for (i <- user_review_dist.collect()) {
+            for (i <- user_review_dist) {
                 writer.write(i._1 + "," + i._2 + "\n")
             }
             writer.close()
 
 			writer = new PrintWriter(new File("product_review_distribution.csv"))
-            for (i <- prod_review_dist.collect()) {
+            for (i <- prod_review_dist) {
                 writer.write(i._1 + "," + i._2 + "\n")
             }
             writer.close()
