@@ -14,7 +14,7 @@ import org.apache.hadoop.conf.Configuration
 
 import org.apache.spark.sql.functions.{unix_timestamp, from_unixtime}
 
-object AmazonStats {
+object AmazonStats extends Serializable {
     // Application Specific Variables
 	private final val SPARK_MASTER = "yarn-client"
 	private final val APPLICATION_NAME = "amazon_stats"
