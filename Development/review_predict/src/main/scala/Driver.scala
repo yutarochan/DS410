@@ -42,17 +42,14 @@ object ReviewPredict {
         val ratings_user = ratings.keyBy(_._1).join(user_int).map(x => (x._2._1._1, x._2._1._2, x._2._2.toInt, x._2._1._3))                         // (uid_str, pid_str, uid_int, rating)
         val ratings_data = ratings_user.keyBy(_._2).join(prod_int).map(x => (x._2._1._1, x._2._1._2, x._2._1._3.toInt, x._2._2.toInt, x._2._1._4))  // (uid_str, pid_str, uid_str, pid_str, rating)
 
-        // Prepare Data for Model
-        val data = ratings_data.map(x => Rating(x._3, x._4, x._5))
-
         // Split Dataset
-        val splits = ratings.randomSplit(Array(0.7, 0.3))
-        val (train, test) = (splits(0), splits(1))
-
+        val splits = ratings_data.randomSplit(Array(0.7, 0.3))
+        val train = splits(0).map(x => Rating(x._3, x._4, x._5))
+        val test = splits(1).map(x => Rating(x._3, x._4, x._5))
 
         // Build the recommendation model using ALS
         val rank = 10
-        val numIterations = 10
+        val numIterations = 20
         val model = ALS.train(train, rank, numIterations, 0.01)
 
         // Evaluate the model on rating data
@@ -60,7 +57,10 @@ object ReviewPredict {
         val predictions = model.predict(usersProducts).map { case Rating(user, product, rate) => ((user, product), rate) }
 
         val ratesAndPreds = test.map { case Rating(user, product, rate) => ((user, product), rate) }.join(predictions)
-        val MSE = ratesAndPreds.map { case ((user, product), (r1, r2)) => val err = (r1 - r2) err * err}.mean()
+        val MSE = ratesAndPreds.map { case ((user, product), (r1, r2)) =>
+            val err = (r1 - r2)
+            err * err
+        }.mean()
         println("Mean Squared Error = " + MSE)
     }
 }
