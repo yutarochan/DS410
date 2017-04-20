@@ -1,3 +1,10 @@
+import org.apache.hadoop.fs.Path
+import org.apache.hadoop.fs.FileSystem
+import org.apache.spark.SparkConf
+import org.apache.spark.SparkContext
+import org.apache.spark.SparkContext._
+import org.apache.hadoop.conf.Configuration
+
 object ReviewPredict {
     // Application Specific Variables
 	private final val SPARK_MASTER = "yarn-client"
