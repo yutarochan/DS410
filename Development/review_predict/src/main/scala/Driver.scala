@@ -5,6 +5,10 @@ import org.apache.spark.SparkContext
 import org.apache.spark.SparkContext._
 import org.apache.hadoop.conf.Configuration
 
+import org.apache.spark.mllib.recommendation.ALS
+import org.apache.spark.mllib.recommendation.Rating
+import org.apache.spark.mllib.recommendation.MatrixFactorizationModel
+
 object ReviewPredict {
     // Application Specific Variables
 	private final val SPARK_MASTER = "yarn-client"
@@ -26,7 +30,7 @@ object ReviewPredict {
 
     def main(args: Array[String]): Unit = {
         // Import HDFS and Parse JSON Object
-        val reviews = sc.textFile("hdfs:/user/yjo5006/reviews_Books_5.json.gz")
+        val reviews = sc.textFile("hdfs:/user/yjo5006/reviews_Baby_5.json.gz")
         val review_df = sqlContext.read.json(reviews)
 
         // ID to Integer Mapping - Map Between Integer to String ID (vice-versa)
@@ -35,10 +39,28 @@ object ReviewPredict {
 
         // Process Integer Mapping
         val ratings = review_df.select("reviewerID", "asin", "overall").rdd.map(x => (x(0).toString, x(1).toString, x(2).toString.toDouble))
-        val ratings_user = ratings.keyBy(_._1).join(user_int)
-        // val ratings_data = ratings_user.keyBy(_._2).join(prod_int).map{case (_, (prod, user, rating)) => (prod, user, rating)}
+        val ratings_user = ratings.keyBy(_._1).join(user_int).map(x => (x._2._1._1, x._2._1._2, x._2._2.toInt, x._2._1._3))                         // (uid_str, pid_str, uid_int, rating)
+        val ratings_data = ratings_user.keyBy(_._2).join(prod_int).map(x => (x._2._1._1, x._2._1._2, x._2._1._3.toInt, x._2._2.toInt, x._2._1._4))  // (uid_str, pid_str, uid_str, pid_str, rating)
 
-        println(ratings_user.take(1))
-        // println(ratings_data.take(10))
-	}
+        // Prepare Data for Model
+        val data = ratings_data.map(x => Rating(x._3, x._4, x._5))
+
+        // Split Dataset
+        val splits = ratings.randomSplit(Array(0.7, 0.3))
+        val (train, test) = (splits(0), splits(1))
+
+
+        // Build the recommendation model using ALS
+        val rank = 10
+        val numIterations = 10
+        val model = ALS.train(train, rank, numIterations, 0.01)
+
+        // Evaluate the model on rating data
+        val usersProducts = test.map { case Rating(user, product, rate) => (user, product) }
+        val predictions = model.predict(usersProducts).map { case Rating(user, product, rate) => ((user, product), rate) }
+
+        val ratesAndPreds = test.map { case Rating(user, product, rate) => ((user, product), rate) }.join(predictions)
+        val MSE = ratesAndPreds.map { case ((user, product), (r1, r2)) => val err = (r1 - r2) err * err}.mean()
+        println("Mean Squared Error = " + MSE)
+    }
 }
