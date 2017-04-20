@@ -75,6 +75,14 @@ object AmazonStats extends Serializable {
                 writer.write(i._1 + "," + i._2 + "\n")
             }
             writer.close()
+		} else if (args(0) == "review_dist") {
+			val ratings = review_df.select("reviewerID", "asin", "overall").rdd.map(x => (x(0).toString, x(1).toString, x(2).toString.toFloat))
+			val review_dist = ratings.map(x => (x._3, 1)).groupByKey.map(x=> (x._1, x._2.sum))
+		} else if (args(0) == "preprocess") {
+			val ratings = review_df.select("reviewerID", "asin", "overall").rdd.map(x => (x(0).toString, x(1).toString, x(2).toString.toFloat))
+
+			val products = ratings.map(x=>(x._1, 1)).groupByKey().map(x=>(x._1, x._2.sum)).sortByKey()
+			val products = ratings.map(x=>x._1).distinct()
 		}
 	}
 }

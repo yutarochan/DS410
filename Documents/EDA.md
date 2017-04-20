@@ -56,7 +56,7 @@
 * reviews_Books_5.json.gz - `8898041`
 * metadata.json.gz - `2370585`
 
-### Reviewer Review Statistics
+### User Review Statistics
     +-------+------------------+
     |summary|             count|
     +-------+------------------+
@@ -67,18 +67,5 @@
     |    max|             23222|
     +-------+------------------+
 
-### Overall Helpfulness Ratio Distribution
-
-## Temporal Analysis
-### Monthly
-### Weekly
-### Day of Week
-
-## Review Text Analysis
-### Word Count Distribution
-### Top-100 Word Frequency
-(With Stopwords Removed)
-
-## Price Distribution
-## Brand Distribution
-## Category Distribution
+### Ratings Distributions
+Array((5.0,4980815), (4.0,2223094), (3.0,955189), (1.0,323833), (2.0,415110))
