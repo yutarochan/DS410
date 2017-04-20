@@ -35,10 +35,10 @@ object ReviewPredict {
 
         // Process Integer Mapping
         val ratings = review_df.select("reviewerID", "asin", "overall").rdd.map(x => (x(0).toString, x(1).toString, x(2).toString.toDouble))
-        val ratings_user = ratings.keyBy(_._1).join(user_int).map(_)
+        val ratings_user = ratings.keyBy(_._1).join(user_int)
         // val ratings_data = ratings_user.keyBy(_._2).join(prod_int).map{case (_, (prod, user, rating)) => (prod, user, rating)}
 
-        println(ratings_user)
+        println(ratings_user.take(1))
         // println(ratings_data.take(10))
 	}
 }
