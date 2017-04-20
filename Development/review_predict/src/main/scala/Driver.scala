@@ -30,7 +30,7 @@ object ReviewPredict {
 
     def main(args: Array[String]): Unit = {
         // Import HDFS and Parse JSON Object
-        val reviews = sc.textFile("hdfs:/user/yjo5006/reviews_Baby_5.json.gz")
+        val reviews = sc.textFile("hdfs:/user/yjo5006/reviews_Books_5.json.gz")
         val review_df = sqlContext.read.json(reviews)
 
         // ID to Integer Mapping - Map Between Integer to String ID (vice-versa)
