@@ -49,7 +49,8 @@ object ReviewPredict {
 
         // Split Dataset
         val splits = ratings_data.randomSplit(Array(0.7, 0.3))
-        val train = splits(0).map(x => Rating(x._3, x._4, x._5)).persist(StorageLevel.MEMORY_ONLY)
+        val train = splits(0).map(x => Rating(x._3, x._4, x._5))
+		// val train = splits(0).map(x => Rating(x._3, x._4, x._5)).persist(StorageLevel.MEMORY_ONLY)
         val test = splits(1).map(x => Rating(x._3, x._4, x._5))
 
         // Build the recommendation model using ALS
