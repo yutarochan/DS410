@@ -39,7 +39,7 @@ object AmazonStats extends Serializable {
 		val metadata = sc.textFile("hdfs:/user/yjo5006/meta_Books.json.gz").map(x => x.replace("\'", "\""))
 
 		// Parse JSON and Convert to SparkSQL Dataframe
-		val review_df = sqlContext.read.json(reviews)
+		val review_df = sqlContext.read.json(reviews).persist()
 		val metadata_df = sqlContext.read.json(metadata)
 
 		if(args(0) == "printSchema") {
@@ -83,6 +83,8 @@ object AmazonStats extends Serializable {
 
 			val products = ratings.map(x=>(x._1, 1)).groupByKey().map(x=>(x._1, x._2.sum)).sortByKey()
 			val products = ratings.map(x=>x._1).distinct()
+		} else if (args(0) == "helpful") {
+			val helpfulness = review_df.select($"helpful"(0), $"helpful"(1)).rdd.filter(_(1) != 0).map(x => x(0).asInstanceOf[Number].floatValue / x(1).asInstanceOf[Number].floatValue)
 		}
 	}
 }
