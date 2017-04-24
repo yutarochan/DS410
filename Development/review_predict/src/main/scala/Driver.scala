@@ -4,6 +4,7 @@ import org.apache.spark.SparkConf
 import org.apache.spark.SparkContext
 import org.apache.spark.SparkContext._
 import org.apache.hadoop.conf.Configuration
+import org.apache.spark.storage.StorageLevel
 
 import org.apache.spark.mllib.recommendation.ALS
 import org.apache.spark.mllib.recommendation.Rating
@@ -38,13 +39,13 @@ object ReviewPredict {
         val prod_int = review_df.select("asin").rdd.map(x=>x(0).toString).distinct().zipWithUniqueId()
 
         // Process Integer Mapping
-        val ratings = review_df.select("reviewerID", "asin", "overall").rdd.map(x => (x(0).toString, x(1).toString, x(2).toString.toDouble)).persist()
+        val ratings = review_df.select("reviewerID", "asin", "overall").rdd.map(x => (x(0).toString, x(1).toString, x(2).toString.toDouble))
         val ratings_user = ratings.keyBy(_._1).join(user_int).map(x => (x._2._1._1, x._2._1._2, x._2._2.toInt, x._2._1._3))                         // (uid_str, pid_str, uid_int, rating)
         val ratings_data = ratings_user.keyBy(_._2).join(prod_int).map(x => (x._2._1._1, x._2._1._2, x._2._1._3.toInt, x._2._2.toInt, x._2._1._4))  // (uid_str, pid_str, uid_str, pid_str, rating)
 
         // Split Dataset
         val splits = ratings_data.randomSplit(Array(0.7, 0.3))
-        val train = splits(0).map(x => Rating(x._3, x._4, x._5))
+        val train = splits(0).map(x => Rating(x._3, x._4, x._5)).persist(StorageLevel.MEMORY_ONLY)
         val test = splits(1).map(x => Rating(x._3, x._4, x._5))
 
         // Build the recommendation model using ALS

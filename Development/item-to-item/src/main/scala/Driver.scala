@@ -27,7 +27,7 @@ object ItemToItem {
         val prod_int = review_df.select("asin").rdd.map(x=>x(0).toString).distinct().zipWithUniqueId()
 
         // Process Integer Mapping
-        val ratings = review_df.select("reviewerID", "asin", "overall").rdd.map(x => (x(0).toString, x(1).toString, x(2).toString.toDouble)).cache()
+        val ratings = review_df.select("reviewerID", "asin", "overall").rdd.map(x => (x(0).toString, x(1).toString, x(2).toString.toDouble))
         val ratings_user = ratings.keyBy(_._1).join(user_int).map(x => (x._2._1._1, x._2._1._2, x._2._2.toInt, x._2._1._3))                         // (uid_str, pid_str, uid_int, rating)
         val ratings_data = ratings_user.keyBy(_._2).join(prod_int).map(x => (x._2._1._1, x._2._1._2, x._2._1._3.toInt, x._2._2.toInt, x._2._1._4))  // (uid_str, pid_str, uid_str, pid_str, rating)
 
@@ -35,8 +35,6 @@ object ItemToItem {
         val splits = ratings_data.randomSplit(Array(0.7, 0.3))
         val train = splits(0).map(x => Rating(x._3, x._4, x._5))
         val test = splits(1).map(x => Rating(x._3, x._4, x._5))
-
-        
 
     }
 }
