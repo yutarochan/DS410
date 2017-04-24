@@ -36,10 +36,10 @@ object ReviewPredict {
 
         // ID to Integer Mapping - Map Between Integer to String ID (vice-versa)
 
-		val user_int = review_df.select("reviewerID").rdd.map(x=>(x(0).toString,1)).groupByKey
+		val user_int = review_df.select("reviewerID").rdd.map(x=>x(0).toString,1).groupByKey
 			.map(x=>(x._1,x._2.sum)).filter(_._2 > 14).map(x=>x_.2).distinct().zipWithUniqueId()
 
-		val prod_int = review_df.select("asin").rdd.map(x=>(x(0).toString,1)).groupByKey
+		val prod_int = review_df.select("asin").rdd.map(x=>x(0).toString,1).groupByKey
 			.map(x=>(x._1,x._2.sum)).filter(_._2 > 24).map(x=>x_.2).distinct().zipWithUniqueId()
 
         // Process Integer Mapping
