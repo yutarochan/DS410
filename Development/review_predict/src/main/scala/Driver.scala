@@ -54,7 +54,7 @@ object ReviewPredict {
         // Build the recommendation model using ALS
         val rank = 10
         val numIterations = 20
-        val model = ALS.train(train, rank, numIterations, 0.01, -1)
+        val model = ALS.train(train, rank, numIterations, 0.01, 10)
 
         // Evaluate the model on rating data
         val usersProducts = test.map { case Rating(user, product, rate) => (user, product) }
