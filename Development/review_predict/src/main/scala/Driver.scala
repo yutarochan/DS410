@@ -78,7 +78,7 @@ object ReviewPredict {
 		var i = 1
     	println("Product Recommendations:")
     	rec.foreach { r =>
-      		println("%2d".format(i) + ": " + movies(r.product))
+      		println("%2d".format(i) + ": " + r.product)
       		i += 1
     	}
 
