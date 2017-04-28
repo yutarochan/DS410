@@ -84,14 +84,14 @@ object ReviewPredict {
 
 			// Process Prediction
 			val user_pred = Array("A18B0T2O25SFT9","AAX4K7QPDTT20", "AJT9NDFFCC5M9", "A1I0KKPLFSD5TB", "A3COJUSKEDTGJ6")
-			for ( var user <- user_pred ) {
+			for (user <- user_pred) {
 				val user_record = review_df.select("reviewerID", "asin", "overall").where($"reviewerID" === user)
 				val user_x = user_record.map { case Rating(user, product, rate) => (user, product) }
 
 				// Display Records
 				println("[USER: "+user+"]\n")
 				println("<Past Purchase Records>")
-				for ( var rec <- user_record.collect() ) {
+				for (rec <- user_record.collect() ) {
 
 				}
 			}
