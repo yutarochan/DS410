@@ -91,8 +91,7 @@ object ReviewPredict {
 				val candidates = prod_int.keys.filter(!user_record.contains(_))
 
 				// Infer Recommendations
-				val cand_map = candidates.map(x => (user, x))
-				val recommendations = model.predict(cand_map).collect().sortBy(- _.rating).take(10)
+				val recommendations = model.predict(candidates.map((0, _))).collect().sortBy(- _.rating).take(10)
 
 				// Display Records
 				/*
