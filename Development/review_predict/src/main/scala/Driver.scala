@@ -45,26 +45,45 @@ object ReviewPredict {
 
 		review_df.unpersist()
 
-        // Split Dataset
-        val splits = ratings_data.randomSplit(Array(0.7, 0.3))
-        // val train = splits(0).map(x => Rating(x._3, x._4, x._5))
-		val train = splits(0).map(x => Rating(x._3, x._4, x._5)).persist()
-        val test = splits(1).map(x => Rating(x._3, x._4, x._5))
+		if(args(0) == "train") {
+			println("[TRAINING MODE]")
 
-        // Build the recommendation model using ALS
-        val rank = 10
-        val numIterations = 20
-        val model = ALS.train(train, rank, numIterations, 0.01, 10)
+	        // Split Dataset
+	        val splits = ratings_data.randomSplit(Array(0.7, 0.3))
+	        // val train = splits(0).map(x => Rating(x._3, x._4, x._5))
+			val train = splits(0).map(x => Rating(x._3, x._4, x._5)).persist(StorageLevel.MEMORY_AND_DISK_SER)
+	        val test = splits(1).map(x => Rating(x._3, x._4, x._5))
 
-        // Evaluate the model on rating data
-        val usersProducts = test.map { case Rating(user, product, rate) => (user, product) }
-        val predictions = model.predict(usersProducts).map { case Rating(user, product, rate) => ((user, product), rate) }
+	        // Build the recommendation model using ALS
+	        val rank = 10
+	        val numIterations = 20
+	        val model = ALS.train(train, rank, numIterations, 0.01, 10)
 
-        val ratesAndPreds = test.map { case Rating(user, product, rate) => ((user, product), rate) }.join(predictions)
-        val MSE = ratesAndPreds.map { case ((user, product), (r1, r2)) =>
-            val err = (r1 - r2)
-            err * err
-        }.mean()
-        println("Mean Squared Error = " + MSE)
+	        // Evaluate the model on rating data
+	        val usersProducts = test.map { case Rating(user, product, rate) => (user, product) }
+	        val predictions = model.predict(usersProducts).map { case Rating(user, product, rate) => ((user, product), rate) }
+
+	        val ratesAndPreds = test.map { case Rating(user, product, rate) => ((user, product), rate) }.join(predictions)
+	        val MSE = ratesAndPreds.map { case ((user, product), (r1, r2)) =>
+	            val err = (r1 - r2)
+	            err * err
+	        }.mean()
+	        println("Mean Squared Error = " + MSE)
+
+			// Save and load model
+			model.save(sc, "amazon_cf_model")
+		} else if (args(0) == "test") {
+			println("[TESTING MODE]")
+
+			// Load Trained Model
+			val sameModel = MatrixFactorizationModel.load(sc, "amazon_cf_model")
+
+			// Load Product Metadata
+			val metadata = sc.textFile("hdfs:/user/yjo5006/meta_Books.json.gz").map(x => x.replace("\'", "\""))
+			val metadata_df = sqlContext.read.json(metadata).persist(StorageLevel.MEMORY_AND_DISK_SER)
+
+			// Process Prediction
+			val user_pred = Array("A18B0T2O25SFT9","AAX4K7QPDTT20", "AJT9NDFFCC5M9", "A1I0KKPLFSD5TB", "A3COJUSKEDTGJ6")
+		}
     }
 }
