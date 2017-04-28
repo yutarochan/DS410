@@ -85,7 +85,7 @@ object ReviewPredict {
 			// prod_int.filter(_._2 == r.product)
       		// println("%2d".format(i) + ": " + r.product)
       		i += 1
-    	} */
+    	}
 
 		// Save and load model
 		model.save(sc, "amazon_cf_model")
