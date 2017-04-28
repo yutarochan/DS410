@@ -77,7 +77,7 @@ object ReviewPredict {
 		// Generate Recommendations
 		val prod_hist = usersProducts.filter(_._1 == 1)
 		val rec = model.predict(prod_hist).collect().sortBy(- _.rating).take(25).map(_.product).toSeq
-		val rec_asin = prod_int.filter(rec.contains(_)).toSeq
+		val rec_asin = prod_int.filter(rec.contains(_)).collect().toSeq
 		// val rec_asin = metadata_df.select("title", "asin").filter(rec_filter.contains(_))
 
 		var i = 1
