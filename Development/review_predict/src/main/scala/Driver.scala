@@ -86,11 +86,11 @@ object ReviewPredict {
 			val user_pred = Array("A18B0T2O25SFT9","AAX4K7QPDTT20", "AJT9NDFFCC5M9", "A1I0KKPLFSD5TB", "A3COJUSKEDTGJ6")
 			for (user <- user_pred) {
 				// Prepare Prediction Input
-				val user_record = review_df.select("reviewerID", "asin").where($"reviewerID" === "A1HK2FQW6KXQB2").rdd.map(x => x(1).toString).toSeq
+				val user_record = review_df.select("reviewerID", "asin").where("reviewerID = " + user).rdd.map(x => x(1).toString).toSeq
 				val candidates = prod_int.keys.filter(!user_record.contains(_))
 
 				// Infer Recommendations
-				val recommendations = model.get.predict(candidates.map(0, _)).collect().sortBy(- _.rating).take(10)
+				val recommendations = model.predict(candidates.map(0, _)).collect().sortBy(- _.rating).take(10)
 
 				// Display Records
 				/*
