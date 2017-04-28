@@ -44,7 +44,7 @@ object ReviewPredict {
         val ratings_data = ratings_user.keyBy(_._2).join(prod_int).map(x => (x._2._1._1, x._2._1._2, x._2._1._3.toInt, x._2._2.toInt, x._2._1._4))  // (uid_str, pid_str, uid_str, pid_str, rating)
 
 		review_df.unpersist()
-		ratigs_data.persist(StorageLevel.MEMORY_AND_DISK_SER)
+		ratings_data.persist(StorageLevel.MEMORY_AND_DISK_SER)
 
 		if(args(0) == "train") {
 			println("[TRAINING MODE]")
