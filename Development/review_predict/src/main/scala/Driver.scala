@@ -76,7 +76,7 @@ object ReviewPredict {
 			println("[TESTING MODE]")
 
 			// Load Trained Model
-			val sameModel = MatrixFactorizationModel.load(sc, "amazon_cf_model")
+			val model = MatrixFactorizationModel.load(sc, "amazon_cf_model")
 
 			// Load Product Metadata
 			val metadata = sc.textFile("hdfs:/user/yjo5006/meta_Books.json.gz").map(x => x.replace("\'", "\""))
@@ -85,15 +85,22 @@ object ReviewPredict {
 			// Process Prediction
 			val user_pred = Array("A18B0T2O25SFT9","AAX4K7QPDTT20", "AJT9NDFFCC5M9", "A1I0KKPLFSD5TB", "A3COJUSKEDTGJ6")
 			for (user <- user_pred) {
-				val user_record = review_df.select("reviewerID", "asin", "overall").where("reviewerID = " + user)
-				val user_x = user_record.rdd.map(x => (x(0).toString, x(1).toString, x(2).toString.toDouble)).map { case Rating(user, product, rate) => (user, product) }
+				// Prepare Prediction Input
+				val user_record = review_df.select("reviewerID", "asin").where($"reviewerID" === "A1HK2FQW6KXQB2").rdd.map(x => x(1).toString).toSeq
+				val candidates = prod_int.keys.filter(!user_record.contains(_))
+
+				// Infer Recommendations
+				val recommendations = model.get.predict(candidates.map(0, _)).collect().sortBy(- _.rating).take(10)
 
 				// Display Records
+				/*
 				println("[USER: "+user+"]\n")
 				println("<Past Purchase Records>")
 				for (rec <- user_record.collect() ) {
 
-				}
+				}	*/
+
+				// Test: A1HK2FQW6KXQB2
 			}
 		}
     }
