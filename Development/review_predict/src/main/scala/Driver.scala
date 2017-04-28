@@ -83,8 +83,8 @@ object ReviewPredict {
 		var i = 1
     	println("Product Recommendations:")
     	rec_asin.foreach { r =>
-			val title = metadata_df.select("title", "asin").where("asin = " + r)
-			println(title.take(0).toString)
+			// val title = metadata_df.select("title", "asin").where("asin = " + r)
+			println(i + ":\t" + r)
 			// prod_int.filter(_._2 == title.take(1))
       		// println("%2d".format(i) + ": " + r.product)
       		i += 1
