@@ -78,7 +78,8 @@ object ReviewPredict {
 		val prod_hist = usersProducts.filter(_._1 == 1)
 		val rec = model.predict(prod_hist).collect().sortBy(- _.rating).take(25).map(_.product).toSeq
 
-		val rec_text = metadata_df.select("title", "asin").filter(rec.contains(_))
+		prod_int.filter(rec.contains(_))
+		// val rec_text = metadata_df.select("title", "asin").filter(rec.contains())
 
 		/*
 		var i = 1
