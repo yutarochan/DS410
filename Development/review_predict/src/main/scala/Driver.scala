@@ -34,6 +34,9 @@ object ReviewPredict {
         val reviews = sc.textFile("hdfs:/user/yjo5006/reviews_Books_5.json.gz")
         val review_df = sqlContext.read.json(reviews).persist()
 
+		val metadata = sc.textFile("hdfs:/user/yjo5006/meta_Books.json.gz").map(x => x.replace("\'", "\""))
+		val metadata_df = sqlContext.read.json(metadata)
+
         // ID to Integer Mapping - Map Between Integer to String ID (vice-versa)
 		val user_int = review_df.select("reviewerID").rdd.map(x=> (x(0).toString, 1) ).groupByKey.map(x=>(x._1,x._2.sum)).filter(_._2 > 14).map(x=>x._1).distinct().zipWithUniqueId()
 		val prod_int = review_df.select("asin").rdd.map(x=> (x(0).toString,1) ).groupByKey.map(x=>(x._1,x._2.sum)).filter(_._2 > 24).map(x=>x._1).distinct().zipWithUniqueId()
@@ -73,14 +76,16 @@ object ReviewPredict {
 
 		// Generate Recommendations
 		val prod_hist = usersProducts.filter(_._1 == 1)
-		val rec = model.predict(prod_hist).collect().sortBy(- _.rating).take(25)
+		val rec = model.predict(prod_hist).collect().sortBy(- _.rating).take(25).map(_.product)
 
+		/*
 		var i = 1
     	println("Product Recommendations:")
     	rec.foreach { r =>
+			prod_int.filter(_._2 == r.product)
       		println("%2d".format(i) + ": " + r.product)
       		i += 1
-    	}
+    	} */
 
 		// Save and load model
 		model.save(sc, "amazon_cf_model")
